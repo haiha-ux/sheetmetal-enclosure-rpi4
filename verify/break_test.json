@@ -107,13 +107,13 @@
   ]
  },
  {
-  "case": "relief only 2 mm deep",
+  "case": "relief only 1 mm deep (2.67 from the bend line)",
   "override": {
-   "RELIEF_DEPTH": 2.0
+   "RELIEF_DEPTH": 1.0
   },
   "caught": true,
   "failed_checks": [
-   "bend reliefs: width >= T/2, depth >= T + r + 0.5"
+   "bend reliefs on the DXF: width >= T/2 = 0.75, depth from the bend >= T + r + 0.5 = 3.5"
   ]
  }
 ]

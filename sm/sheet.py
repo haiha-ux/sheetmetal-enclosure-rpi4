@@ -68,7 +68,8 @@ def body_solid():
     sb = P.BEND_SETBACK
     b = box(r, L - r, r, W - r, 0, T)
     for side, (ax, n, pos, E) in SIDES.items():
-        b += bend(side, -r, T + r, r + sb, E - r - sb, (-r, T), (0, T + r))
+        rd = P.RELIEF_DEPTH
+        b += bend(side, -r, T + r, r + rd, E - r - rd, (-r, T), (0, T + r))      # bottom bend stops at the corner relief
         b += sbox(side, 0, T, r + sb, E - r - sb, T + r, H - T - r)
         b += bend(side, T + r, H - T - r, r + sb, E - r - sb, (0, T + r), (H - T - r, H))
         u0, u1 = T + r, T + F
@@ -79,18 +80,19 @@ def body_solid():
 
 
 def relief_slots(part):
-    """Bend reliefs at the 4 corners: a slot BEND_SETBACK wide and RELIEF_DEPTH deep into the base or plate,
-    beside each end of each bend (relief width >= T/2, depth >= T + r + 0.5 past the bend)."""
-    sb, rd = P.BEND_SETBACK, P.RELIEF_DEPTH
+    """Square corner reliefs RELIEF_DEPTH x RELIEF_DEPTH cut from the 4 corners of the base (body) or plate (lid).
+    The bends that meet at a corner stop at its edges, so neither bend ends against flat material."""
+    rd = P.RELIEF_DEPTH
+    if part == "body":
+        x0, x1, y0, y1 = r, P.L - r, r, P.W - r
+    else:
+        a = lid_geom()[0] - r
+        x0, x1, y0, y1 = -a, P.L + a, -a, P.W + a
     out = []
-    for side, (ax, n, pos, E) in SIDES.items():
-        if part == "body":
-            e0, s0, s1 = -r, r, E - r
-        else:
-            a = lid_geom()[0] - r
-            e0, s0, s1 = a, -a, E + a
-        for a_, b_ in ((s0, s0 + sb), (s1 - sb, s1)):
-            out.append(fpoly(side, [(e0 - rd, a_), (e0, a_), (e0, b_), (e0 - rd, b_)]))
+    for cx, sx in ((x0, 1), (x1, -1)):
+        for cy, sy in ((y0, 1), (y1, -1)):
+            xs, ys = sorted((cx, cx + sx * rd)), sorted((cy, cy + sy * rd))
+            out.append(Polygon((xs[0], ys[0]), (xs[1], ys[0]), (xs[1], ys[1]), (xs[0], ys[1]), align=None))
     return out
 
 
@@ -109,8 +111,9 @@ def lid_solid():
     sb = P.BEND_SETBACK
     b = box(-a, L + a, -a, W + a, zl, zl + T)
     for side, (ax, n, pos, E) in SIDES.items():
-        b += bend(side, u_si - r, zl - r, -a + sb, E + a - sb, (u_si - r, u_si + T), (zl - r, zl + T))
-        b += sbox(side, u_si, u_si + T, -a + sb, E + a - sb, zsb, zl - r)
+        rd = P.RELIEF_DEPTH
+        b += bend(side, u_si - r, zl - r, -a + rd, E + a - rd, (u_si - r, u_si + T), (zl - r, zl + T))
+        b += sbox(side, u_si, u_si + T, -a + rd, E + a - rd, zsb, zl - r)
     for sl in relief_slots("lid"):
         b -= Pos(0, 0, zl - 1) * extrude(sl, T + 2)
     return b
@@ -168,7 +171,9 @@ def body_flat_regions():
     for side, (ax, n, pos, E) in SIDES.items():
         u_edge = -r                                # base flat edge, in u
         v_wall_end = 2 * BA + wall_flat()
-        faces.append(fpoly(side, [(u_edge, r + sb), (u_edge + v_wall_end, r + sb), (u_edge + v_wall_end, E - r - sb), (u_edge, E - r - sb)]))
+        rd = P.RELIEF_DEPTH
+        faces.append(fpoly(side, [(u_edge, r + rd), (u_edge + BA, r + rd), (u_edge + BA, E - r - rd), (u_edge, E - r - rd)]))   # bottom bend
+        faces.append(fpoly(side, [(u_edge + BA, r + sb), (u_edge + v_wall_end, r + sb), (u_edge + v_wall_end, E - r - sb), (u_edge + BA, E - r - sb)]))
         # flange: flat u' = u_edge + v ; 3D u = T + r + (v - v_wall_end); miter s >= -u3d
         v0, v1 = v_wall_end, v_wall_end + flange_flat()
         u3 = lambda v: T + r + (v - v0)
@@ -188,7 +193,8 @@ def lid_flat_regions():
         plate = plate - sl
     faces = [plate]
     for side, (ax, n, pos, E) in SIDES.items():
-        faces.append(fpoly(side, [(a, -a + sb), (a + BA + skirt_flat, -a + sb), (a + BA + skirt_flat, E + a - sb), (a, E + a - sb)]))
+        rd = P.RELIEF_DEPTH
+        faces.append(fpoly(side, [(a, -a + rd), (a + BA + skirt_flat, -a + rd), (a + BA + skirt_flat, E + a - rd), (a, E + a - rd)]))
     return faces
 
 
@@ -204,14 +210,13 @@ def bend_lines(part):
     out = []
     if part == "body":
         for side, (ax, n, pos, E) in SIDES.items():
-            for v, d in ((BA / 2, "UP 90"), (BA + wall_flat() + BA / 2, "DOWN 90")):
-                sb = P.BEND_SETBACK
+            for v, d, sb in ((BA / 2, "UP 90", P.RELIEF_DEPTH), (BA + wall_flat() + BA / 2, "DOWN 90", P.BEND_SETBACK)):
                 out.append((side, g(side, -r + v, r + sb), g(side, -r + v, E - r - sb), 90.0, d, E - 2 * r - 2 * sb))
     else:
         u_si, zl, zsb, _ = lid_geom()
         a = u_si - r
         for side, (ax, n, pos, E) in SIDES.items():
-            sb = P.BEND_SETBACK
+            sb = P.RELIEF_DEPTH
             out.append((side, g(side, a + BA / 2, -a + sb), g(side, a + BA / 2, E + a - sb), 90.0, "DOWN 90", E + 2 * a - 2 * sb))
     return out
 

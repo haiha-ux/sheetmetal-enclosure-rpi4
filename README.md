@@ -19,13 +19,13 @@ below is a CAD check only.
 | Item | Value |
 |---|---|
 | Material | Al 5052-H32, t = 1.5 mm, inside bend radius 1.5 mm (= t) |
-| K-factor | 0.42 (SendCutSend bending calculator, 5052 0.063 in). Bend allowance 3.346 mm per 90° bend |
-| Body | 150 × 110 mm inside, 42 mm tall to the flange top. The flange projects 23.5 mm beyond the wall's outer face (25 mm from its inner face). 8 bends. Each bend stops 0.75 mm short of the corner, with a 0.75 × 3.5 mm relief slot into the base. Wall corners, reliefs and flange mitres are TIG welded and ground flush |
-| Lid | 205 × 165 mm plate with a 9.25 mm skirt. 4 bends with the same 0.75 × 3.5 mm corner reliefs. Skirt corners left open (they are not part of the seal) |
+| K-factor | 0.42 (SendCutSend bending calculator, 5052 0.063 in = 1.6 mm; SendCutSend does not list 1.5 mm 5052). Bend allowance 3.346 mm per 90° bend |
+| Body | 150 × 110 mm inside, 42 mm tall to the flange top. The flange projects 23.5 mm beyond the wall's outer face (25 mm from its inner face). 8 bends. A 4 × 4 mm relief is cut from each corner of the base, and the bottom bends stop at it. The walls and flanges run to 0.75 mm from the corner, leaving a 2.25 mm gap per axis (3.2 mm across the diagonal, about 40 mm tall) that opens into the relief. Corners, reliefs and flange mitres are TIG welded with filler and ground flush |
+| Lid | 205 × 165 mm plate with a 9.25 mm skirt. 4 bends, with the same 4 × 4 mm corner reliefs. Skirt corners and reliefs stay open; they are outside the seal |
 | Closed size | 205 × 165 × 45.75 mm, plus the gland bodies outside |
 | Seal | EPDM closed-cell sponge strip, 8 × 3 mm. It sits on the flange land 3–11 mm from the wall and is compressed 25 % (3.0 → 2.25 mm). 2.25 mm spacers at each screw stop the lid, so the screws cannot over-compress the gasket. The screws are outside the gasket line. |
 | Fasteners | 12 × PEM CLS-M4-1 self-clinching nuts in the flange. 12 × M4 screws through Ø4.5 lid holes |
-| Pi mounting | 4 × PEM FHA-M2.5-12 flush-head studs, on the hole pattern of the official drawing. Each takes a 6 mm spacer (Ø5 / 2.7) and an M2.5 nut. The studs are blind, so there is no hole through the base. PEM's blind standoffs (BSO) start at M3, which is too big for the Pi's 2.7 mm holes. |
+| Pi mounting | 4 × PEM IFHA-M2.5-12 ingress-protection flush-head studs, on the hole pattern of the official drawing, each with a 6 mm spacer (Ø5 / 2.7) and an M2.5 nut. The stud still passes through a 2.54 mm hole in the base; the seal is the clinched joint itself, which PEM rates IPX7 / IPX9K (ISO 20653) without sealant. A standard FH stud fills the hole too, but PEM states its press fit is not a seal. |
 | Cable entries | M16×1.5 gland (cable 4–10 mm) in line with the Ethernet jack. PG7 gland (cable 2–6 mm) in line with the USB-C power plug |
 
 Why no port openings: an opening for a USB or Ethernet jack cannot be IP65 without a sealed panel connector. The Pi
@@ -48,7 +48,7 @@ These are my own checks (`verify/verify.py`, 34 of 34). The reviewer's independe
 | PEM CLS-M4 centre to sheet edge (≥ 6.9 required, PEM data) | 7.5 mm |
 | Flange lengths against SendCutSend's 7.7 mm minimum | wall 42, flange 25, skirt 9.25 mm |
 | Gasket compression against the 20–30 % IP-rated range | 25 % |
-| Bend reliefs against SendCutSend's guide (width ≥ t/2, depth ≥ t + r + 0.5) | 0.75 wide, 3.5 deep |
+| Bend reliefs, measured on the DXF blanks against SendCutSend's guide (width ≥ t/2, depth ≥ t + r + 0.5 from the bend line) | 4.0 wide, 5.67 deep from the bend line |
 | Interference between body, lid, gasket, spacers, nuts, studs, Pi spacers and nuts, glands, Pi envelope and plugs | 0 for every pair |
 
 `verify/break_test.py` breaks the design seven ways, and each break fails the check it should:
@@ -58,7 +58,7 @@ These are my own checks (`verify/verify.py`, 34 of 34). The reviewer's independe
 - Gasket squeezed 40 %.
 - Pi pushed against a wall.
 - Flange cut to 20 mm.
-- Relief only 2 mm deep.
+- Relief only 1 mm deep (2.67 mm from the bend line).
 
 ## Files
 
@@ -85,8 +85,8 @@ finished 23.5 mm flanges hang off the tool, so confirm with the fabricator that 
 The flange mitres run about 23 mm across the gasket land, and TIG welding 1.5 mm aluminium will pull the land out of
 flat. Require a gasket-land flatness of 0.3 mm after welding, using a fixture or a light skim. The tolerance matters
 because the 2.25 mm spacers fix the lid height. A land that is 0.5 mm low in places drops the local compression from
-25 % to about 8 %, which is too little to seal. A tighter weld gap at the corners (now 2.1 mm) would reduce the
-distortion.
+25 % to about 8 %, which is too little to seal. The corner gap is 2.25 mm per axis, so the corners need filler rod.
+A tighter gap, or weld tabs folded across the corners, would reduce the heat input and the distortion.
 
 ## Sources
 
@@ -96,8 +96,8 @@ distortion.
   - Each connector's box size is read from the drawn outline, because the drawing does not dimension it.
 - **K-factor and minimum flange:** SendCutSend bending calculator. 5052 minimum bend radius 1 × t: SendCutSend 5052 page.
 - **PEM CLS-M4-1:** hole 5.41, minimum sheet 1.0, centre to edge 6.9 (pemnet.com).
-- **PEM FHA-M2.5-12:** hole 2.5 (+0.08), minimum sheet 1, centre to edge 5.4 (PEM FH bulletin, p. FH-5). The BSO table (PEM SO bulletin, p. SO-4) shows no M2.5.
-- **Bend reliefs:** SendCutSend relief guide, as cited in review.
+- **PEM IFHA-M2.5-12:** hole 2.50 +0.08 (cut at 2.54), minimum sheet 1, centre to edge 5.4, lengths 10–18 (PEM IPF bulletin, p. IPF-3). Rated IPX7 / IPX9K to ISO 20653, tested in CR4, 6082-T6 and 304 (p. IPF-2).
+- **Bend reliefs:** SendCutSend relief guide: width ≥ thickness / 2, depth ≥ thickness + bend radius + 0.5 mm from the bend line.
 - **Glands:** Lapp SKINTOP data sheets and thread table. M16 entry hole 16.0–16.2, PG7 12.5–12.8.
 - **Gasket compression:** Stockwell Elastomerics, 20–30 % for IP-rated seals.
 
@@ -106,18 +106,24 @@ The full URLs are in `sm/params.py` → `SOURCES`.
 ## Not certain
 
 1. Bend data. SendCutSend's K 0.42 is for 1.6 mm (0.063 in) 5052 on their own tooling, with an effective inside
-   radius of 0.89 mm. The radius matters more than K here:
-   - An air bend in 5052-H32 1.5 mm over a 12 mm V-die gives an inside radius of about 1.9 mm (≈ 0.16 × V). That
-     changes each bend by about +0.6 mm.
+   radius of 0.89 mm; they do not stock 1.5 mm. The radius matters more than K here:
+   - An air bend in 5052-H32 1.5 mm over a 12 mm V-die gives an inside radius of about 1.9 mm (≈ 0.16 × V, a shop
+     rule of thumb, not a standard). That changes each bend by about +0.6 mm. The 4 mm reliefs already cover that
+     radius (t + r + 0.5 = 3.9).
    - K anywhere from 0.38 to 0.45 moves it by only −0.09 / +0.07 mm.
 
    Get the fabricator's inside radius and K, or their bend deduction, and re-run before cutting.
 2. Plug lengths. The USB-C plug with strain relief (30 mm) has no source. The RJ45 plug is a 22.5 mm booted plug
    (Delock) plus a margin. Measure the cables you will use.
-3. PEM part envelopes. The nut barrels and studs in the assembly are envelopes, not data-sheet bodies. The M4 screw
-   length must be checked against the CLS-M4-1 thread length. A flush-head stud has no through hole, but the press
-   fit is metal to metal; add a drop of thread sealant under each head if the IP65 target must hold.
+3. PEM studs and nuts.
+   - The nut barrels and studs in the assembly are envelopes, not data-sheet bodies. The M4 screw length must be
+     checked against the CLS-M4-1 thread length.
+   - PEM tested the IFH seal in CR4, 6082-T6 and 304, not in 5052. A 5052 test coupon is needed before relying on it.
+   - PEM warns against bending after installation. Here the studs go in after all bends, which is the order they ask for.
+   - PEM's tooling changes at 1.51 mm sheet. 1.5 mm sheet with a plus tolerance can fall either side, so measure the
+     sheet and tell the installer.
+   - If the coupon leaks, a sealant under the head is the fallback.
 4. Hardware sizes. The PG7 hole (12.7 mm) is in the middle of the 12.5–12.8 range quoted by different makers; use
    the value of the gland you buy. The gland locknut size was not found and is modelled from the body wrench size.
-5. Corner seal. The seal at the corners depends on the welds. The corner gaps, the 0.75 × 3.5 mm reliefs and the
+5. Corner seal. The seal at the corners depends on the welds. The 2.25 mm corner gaps, the 4 × 4 mm reliefs and the
    flange mitres must be welded closed, and the land kept flat to 0.3 mm (see above).

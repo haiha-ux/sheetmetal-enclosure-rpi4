@@ -132,10 +132,10 @@
   "op": ">="
  },
  {
-  "name": "PEM FHA-M2.5-12 stud",
+  "name": "PEM IFHA-M2.5-12 stud",
   "kind": "hole_diameter",
   "a": "body.step#0",
-  "target": 2.5,
+  "target": 2.54,
   "tol": 0.02,
   "op": "==",
   "count": 4

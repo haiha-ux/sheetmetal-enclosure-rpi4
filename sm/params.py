@@ -30,13 +30,15 @@ LID_HOLE_D = 4.5        # M4 clearance (ISO 273 medium)
 
 # --- fasteners (filled from sources.json) ---------------------------------------
 PEM_NUT = dict(name="PEM CLS-M4-1", hole=5.41, min_sheet=1.0, min_edge=6.9, od=7.9, h=3.6)   # od/h: envelope, not from the data sheet
-# Pi mounting: blind flush-head stud, so the base has no through hole. PEM BSO blind standoffs start at M3
-# (sodata.pdf p. SO-4), too big for the Pi's 2.7 mm holes, hence stud + spacer + nut.
-STUD = dict(name="PEM FHA-M2.5-12", hole=2.5, min_sheet=1.0, min_edge=5.4, head_d=4.1, length=12.0)   # fhdata.pdf p. FH-5
+# Pi mounting: PEM IFHA ingress-protection flush-head stud (ipfdata.pdf p. IPF-3). A standard FH stud fills the hole
+# but its press fit is not a seal; the IFH family is rated IPX7 / IPX9K (ISO 20653) without sealant.
+# Hole 2.50 +0.08 per PEM: cut at 2.54, the middle of the band.
+STUD = dict(name="PEM IFHA-M2.5-12", hole=2.54, hole_spec="2.50 +0.08", min_sheet=1.0, min_edge=5.4, head_d=4.1, length=12.0)
 PI_SPACER = dict(od=5.0, id=2.7, length=6.0)       # plain aluminium spacer under the Pi
 PI_NUT = dict(af=5.0, h=2.0)                       # ISO 4032 M2.5 nut envelope
-BEND_SETBACK = 0.75     # bend ends stop 0.75 short of the corner (relief width >= T/2)
-RELIEF_DEPTH = 3.5      # relief slot depth into the base/plate past the bend (>= T + r + 0.5)
+BEND_SETBACK = 0.75     # walls and flanges stop 0.75 short of the corner (weld gap r + 0.75 per axis)
+RELIEF_DEPTH = 4.0      # square corner relief, 4 x 4, cut from the base/plate corner; the bottom bends stop at it.
+                        # Depth from the bend line >= T + r + 0.5 (3.5 at r 1.5, 3.9 at a 1.9 air-bend radius)
 GLAND_M16 = dict(name="cable gland M16x1.5 (Lapp SKINTOP class)", hole=16.2, nut_od=19 / 0.866, cable=(4.0, 10.0))
 GLAND_PG7 = dict(name="cable gland PG7 (Lapp SKINTOP class)", hole=12.7, nut_od=14 / 0.866, cable=(2.0, 6.0))
 GLAND_M16_Z = 20.0      # gland centre height above the base underside
@@ -87,9 +89,11 @@ SOURCES = {
     "K-factor / min flange": "https://sendcutsend.com/resources/bending-calculator/ (5052 0.063 in: K 0.42, inside radius 0.035 in, min flange 0.303 in)",
     "5052 bend radius": "https://sendcutsend.com/materials/5052-aluminum/ (inside radius as low as 1 x thickness)",
     "PEM CLS-M4-1": "hole 5.41, min sheet 1.0, min centre-to-edge 6.9 (PEM product page / cldata)",
-    "PEM FHA-M2.5-12": "flush-head stud: hole 2.5 +0.08, min sheet 1, min C/L to edge 5.4, lengths 6-18; https://www.pemnet.com/wp-content/uploads/sites/2/2022/06/fhdata.pdf p. FH-5",
+    "PEM IFHA-M2.5-12": "ingress-protection flush-head stud: hole 2.5 +0.08, min sheet 1, C/L to edge 5.4, L 10-18, IPX7/IPX9K (ISO 20653), tested in CR4, 6082-T6, 304; avoid bending after installation; tooling changes at 1.51 mm sheet; https://www.pemnet.com/wp-content/uploads/sites/2/2025/03/ipfdata.pdf pp. IPF-2..4",
+    "PEM FH (not used)": "standard flush-head stud, same hole; press fit is not a seal (https://www.pemnet.com/ingress-protection/)",
     "PEM BSO (not used)": "blind standoffs, smallest metric thread M3; https://www.pemnet.com/wp-content/uploads/sites/2/2022/06/sodata.pdf p. SO-4",
-    "bend relief": "width >= T/2, depth >= T + r + 0.5 past the bend; https://sendcutsend.com/blog/guide-to-designing-bend-reliefs/ (cited by the reviewer, not opened here)",
+    "bend relief": "width >= T/2, depth >= T + r + 0.02 in (0.5 mm) measured from the bend line; https://sendcutsend.com/blog/guide-to-designing-bend-reliefs/",
+    "air-bend radius": "inside radius about 0.16 x die V opening: a shop rule of thumb, not a standard; ask the fabricator",
     "cable glands": "Lapp SKINTOP: M16x1.5 entry 16.0-16.2, SW 19, cable 4-10 mm; PG7 entry 12.5-12.8, SW 14 (Lapp data sheets)",
     "EPDM sponge compression": "Stockwell Elastomerics: 20-30 % for IP-rated seals",
     "Raspberry Pi 4 B": RPI_DRAWING,

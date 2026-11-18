@@ -98,7 +98,7 @@ def flat_sheet(part, title, origin, notes):
         dim(msp, T(X1, Y1), T(X1, y), base=T(X1 + (6 + 5 * j) / SC, 0), angle=90)
     # bend table
     tb = meta["bends"][part]
-    tx, ty = 250, 250
+    tx, ty = 250, 236
     txt(msp, "BEND TABLE (order = sequence on the brake)", (tx, ty), 2.8)
     hdr = "ID   side  angle  direction  r_in   length   K     BA"
     txt(msp, hdr, (tx, ty - 6), 2.2)
@@ -115,7 +115,7 @@ def flat_sheet(part, title, origin, notes):
         kinds.setdefault(round(d, 2), []).append((x - x0, y - y0))
     yy = hy - 6
     for d, lst in sorted(kinds.items()):
-        name = {P.PEM_NUT["hole"]: "PEM CLS-M4-1 nut", P.STUD["hole"]: "PEM FHA-M2.5-12 flush-head stud",
+        name = {P.PEM_NUT["hole"]: "PEM CLS-M4-1 nut", P.STUD["hole"]: "PEM IFHA-M2.5-12 stud (2.50 +0.08)",
                 P.GLAND_M16["hole"]: "M16x1.5 gland", P.GLAND_PG7["hole"]: "PG7 gland", P.LID_HOLE_D: "M4 clearance"}.get(d, "")
         txt(msp, f"{len(lst)} x %%c{d:.2f}  {name}", (tx, yy), 2.2)
         yy -= 4.2
@@ -173,7 +173,7 @@ def assembly_sheet():
            f"12 PEM CLS-M4-1 self-clinching nut (body flange)",
            f"12 Spacer {P.SPACER['od']}/{P.SPACER['id']} x {meta['lid_geom'][3]:.2f} mm (gasket compression stop)",
            "12 M4 pan-head screw, length per PEM CLS-M4-1 thread (M4x8 nominal), with sealing washer",
-           f"4  PEM FHA-M2.5-12 flush-head stud + 6 mm spacer 5/2.7 + M2.5 nut (blind: no hole through the base)",
+           f"4  PEM IFHA-M2.5-12 sealed flush-head stud (IPX7/IPX9K per PEM) + 6 mm spacer 5/2.7 + M2.5 nut",
            f"1  {P.GLAND_M16['name']}, cable {P.GLAND_M16['cable'][0]}-{P.GLAND_M16['cable'][1]} mm (Ethernet)",
            f"1  {P.GLAND_PG7['name']}, cable {P.GLAND_PG7['cable'][0]}-{P.GLAND_PG7['cable'][1]} mm (USB-C power)",
            "1  Raspberry Pi 4 Model B"]
@@ -190,13 +190,12 @@ def assembly_sheet():
 def main():
     common = ["Bend lines (red, dashed) mark the middle of each bend zone.",
               f"Bend allowance {P.ba(90):.3f} per 90 deg bend (K {P.K}, r_in {P.R_IN}).",
-              "All holes laser cut; PEM parts installed after bending."]
+              f"Corner reliefs {P.RELIEF_DEPTH:g} x {P.RELIEF_DEPTH:g} at every corner; bends stop at them."]
     flat_sheet("body", "RPi 4 IP65 enclosure - BODY flat pattern", (35, 25),
                common + ["Bend the flanges (DOWN) first, then the walls (UP): see the step column.",
-                         "Corner reliefs 0.75 x 3.5 at every bend end; weld them closed with the corner seams.",
-                         "Gasket land flatness 0.3 mm after welding (fixture or skim).",
-                         "Weld the 4 wall corners and the 4 flange mitres, grind flush."])
-    flat_sheet("lid", "RPi 4 IP65 enclosure - LID flat pattern", (45, 50), common + ["Skirt corners open (not part of the seal)."])
+                         "PEM CLS-M4-1 and IFHA-M2.5-12 installed after bending.",
+                         "Weld corners, reliefs and mitres with filler; land flat to 0.3 mm after welding."])
+    flat_sheet("lid", "RPi 4 IP65 enclosure - LID flat pattern", (45, 50), common + ["Skirt corners and reliefs stay open (not part of the seal)."])
     assembly_sheet()
 
 

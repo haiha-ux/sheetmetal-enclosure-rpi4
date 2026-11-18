@@ -3,7 +3,7 @@
   "name": "body: one valid solid, STEP re-import matches build",
   "pass": true,
   "solids": 1,
-  "rel_volume": 1.1310334493239982e-14,
+  "rel_volume": 9.611195521671682e-15,
   "rel_bbox": 0.0
  },
  {
@@ -15,7 +15,7 @@
  {
   "name": "body: STL watertight",
   "pass": true,
-  "stl_volume": 75909.14874105192
+  "stl_volume": 75702.50071761095
  },
  {
   "name": "body_flat.dxf: 1 closed outline, holes as circles, 8 BEND lines, mm",
@@ -34,13 +34,13 @@
  {
   "name": "body: STEP unfolded along y (section at x=100.0) = DXF flat length (+-0.1)",
   "pass": true,
-  "step": 236.38318470426458,
+  "step": 236.3831847042652,
   "dxf": 236.3831847042925
  },
  {
   "name": "body: flat area x T (K-corrected) = STEP volume within 0.5 %",
   "pass": true,
-  "rel_err": 1.2077136831764864e-14
+  "rel_err": 1.0572315073838953e-14
  },
  {
   "name": "body: DXF holes refolded onto STEP holes (+-0.1), counts equal",
@@ -63,13 +63,13 @@
  {
   "name": "body: PEM FHA-M2.5 stud centre to sheet edge >= 5.4",
   "pass": true,
-  "min": 21.126109438322995
+  "min": 18.384776310850235
  },
  {
   "name": "lid: one valid solid, STEP re-import matches build",
   "pass": true,
   "solids": 1,
-  "rel_volume": 5.864510479306892e-14,
+  "rel_volume": 5.681365688627825e-14,
   "rel_bbox": 0.0
  },
  {
@@ -81,7 +81,7 @@
  {
   "name": "lid: STL watertight",
   "pass": true,
-  "stl_volume": 57567.00759507815
+  "stl_volume": 57117.55950037343
  },
  {
   "name": "lid_flat.dxf: 1 closed outline, holes as circles, 4 BEND lines, mm",
@@ -100,13 +100,13 @@
  {
   "name": "lid: STEP unfolded along y (section at x=100.0) = DXF flat length (+-0.1)",
   "pass": true,
-  "step": 178.19159235214678,
+  "step": 178.19159235214664,
   "dxf": 178.19159235214624
  },
  {
   "name": "lid: flat area x T (K-corrected) = STEP volume within 0.5 %",
   "pass": true,
-  "rel_err": 5.915066604128157e-14
+  "rel_err": 5.770535105265154e-14
  },
  {
   "name": "lid: DXF holes refolded onto STEP holes (+-0.1), counts equal",
@@ -129,10 +129,16 @@
   "lid skirt": 9.25
  },
  {
-  "name": "bend reliefs: width >= T/2, depth >= T + r + 0.5",
+  "name": "bend reliefs on the DXF: width >= T/2 = 0.75, depth from the bend >= T + r + 0.5 = 3.5",
   "pass": true,
-  "width": 0.75,
-  "depth": 3.5
+  "body": {
+   "width_min": 3.9999999999999587,
+   "depth_min": 5.672898088036524
+  },
+  "lid": {
+   "width_min": 3.9999999999999587,
+   "depth_min": 5.672898088036524
+  }
  },
  {
   "name": "gasket compression inside 20-30 % (Stockwell, IP-rated)",

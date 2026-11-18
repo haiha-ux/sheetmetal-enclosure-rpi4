@@ -188,9 +188,34 @@ def main():
     flanges = {"body wall": P.H, "body flange": P.F + P.T, "lid skirt": (zl + P.T) - zsb}
     report["flange_lengths_outside"] = flanges
     check(f"every flange >= SendCutSend minimum {P.MIN_FLANGE}", min(flanges.values()) >= P.MIN_FLANGE, **flanges)
-    rel_ok = P.BEND_SETBACK >= P.T / 2 and P.RELIEF_DEPTH >= P.T + P.R_IN + 0.5
-    report["bend_relief"] = {"width": P.BEND_SETBACK, "depth": P.RELIEF_DEPTH}
-    check("bend reliefs: width >= T/2, depth >= T + r + 0.5", rel_ok, width=P.BEND_SETBACK, depth=P.RELIEF_DEPTH)
+    # bend reliefs measured on the DXF blanks: probe each expected slot, find where material starts again
+    from matplotlib.path import Path as MPath
+    rel = {}
+    for part in ("body", "lid"):
+        outl, pts, circles, bends, other, units = read_dxf(OUT / f"{part}_flat.dxf")
+        poly = MPath(pts)
+        inside = lambda q: bool(poly.contains_point(q))
+        widths, depths = [], []
+        BA_ = P.ba(90)
+        for side, (ax, n, pos, E) in S.SIDES.items():
+            # base/plate edge (u) and the corner s-values of this side
+            e0, s0, s1 = (-P.R_IN, P.R_IN, E - P.R_IN) if part == "body" else (S.lid_geom()[0] - P.R_IN, -(S.lid_geom()[0] - P.R_IN), E + S.lid_geom()[0] - P.R_IN)
+            for edge_s, sgn in ((s0, 1), (s1, -1)):
+                # width: just inside the plate edge, walk along the bend line from the corner until material starts
+                w = 0.0
+                while w < 10 and not inside(S.g(side, e0 - 0.3, edge_s + sgn * (w + 0.005))):
+                    w += 0.01
+                # depth: in the middle of the relief, walk from the plate edge into the plate until material starts
+                d = 0.0
+                while d < 10 and not inside(S.g(side, e0 - (d + 0.005), edge_s + sgn * w / 2)):
+                    d += 0.01
+                widths.append(w); depths.append(d + BA_ / 2)        # depth reported from the bend line
+        rel[part] = {"width_min": min(widths), "depth_min": min(depths)}
+    need_d = P.T + P.R_IN + 0.5
+    report["bend_relief_measured_on_dxf"] = rel
+    check(f"bend reliefs on the DXF: width >= T/2 = {P.T / 2}, depth from the bend >= T + r + 0.5 = {need_d}",
+          all(v["width_min"] >= P.T / 2 - 0.01 and v["depth_min"] >= need_d - 0.01 for v in rel.values()),
+          body=rel["body"], lid=rel["lid"])
     comp = 1 - gap / P.GASKET["free_t"]
     report["gasket.compression"] = comp
     check("gasket compression inside 20-30 % (Stockwell, IP-rated)", 0.20 <= comp <= 0.30, compression=comp)

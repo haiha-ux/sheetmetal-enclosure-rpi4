@@ -4,7 +4,7 @@
  "kfactor_source": "SendCutSend bending calculator, 5052-H32 0.063 in: K 0.42 (their tooling, effective inside radius 0.89 mm)",
  "r_in": 1.5,
  "material": "Aluminium 5052-H32",
- "body.step#0.volume": 75909.60276080118,
+ "body.step#0.volume": 75702.94036550661,
  "body.step#0.bbox_dx": 200.0,
  "body.step#0.bbox_dy": 160.0,
  "body.step#0.bbox_dz": 42.0,
@@ -19,16 +19,16 @@
  "body_flat.units": 4,
  "body.unfold_from_step.y=30.0": 276.3831847042993,
  "body_flat.chord.y=30.0": 276.3831847042925,
- "body.unfold_from_step.x=100.0": 236.38318470426458,
+ "body.unfold_from_step.x=100.0": 236.3831847042652,
  "body_flat.chord.x=100.0": 236.3831847042925,
- "body_flat.area_net": 50417.15229908248,
- "body.volume_from_flat": 75909.6027608021,
- "body.volume_rel_err": 1.2077136831764864e-14,
+ "body_flat.area_net": 50284.278253425626,
+ "body.volume_from_flat": 75702.94036550741,
+ "body.volume_rel_err": 1.0572315073838953e-14,
  "body.refold_hole_max_err": 1.4210854715202004e-14,
  "body.hole_to_bend_min": 6.65,
  "body.PEM CLS-M4.centre_to_edge_min": 7.5,
- "body.PEM FHA-M2.5 stud.centre_to_edge_min": 21.126109438322995,
- "lid.step#0.volume": 57567.36806752729,
+ "body.PEM FHA-M2.5 stud.centre_to_edge_min": 18.384776310850235,
+ "lid.step#0.volume": 57117.90568985095,
  "lid.step#0.bbox_dx": 205.0,
  "lid.step#0.bbox_dy": 165.0,
  "lid.step#0.bbox_dz": 9.25,
@@ -43,11 +43,11 @@
  "lid_flat.units": 4,
  "lid.unfold_from_step.y=30.0": 218.1915923522326,
  "lid_flat.chord.y=30.0": 218.19159235214624,
- "lid.unfold_from_step.x=100.0": 178.19159235214678,
+ "lid.unfold_from_step.x=100.0": 178.19159235214664,
  "lid_flat.chord.x=100.0": 178.19159235214624,
- "lid_flat.area_net": 38244.41353130633,
- "lid.volume_from_flat": 57567.36806752389,
- "lid.volume_rel_err": 5.915066604128157e-14,
+ "lid_flat.area_net": 37949.67283072844,
+ "lid.volume_from_flat": 57117.905689847656,
+ "lid.volume_rel_err": 5.770535105265154e-14,
  "lid.refold_hole_max_err": 0.0,
  "lid.hole_to_bend_min": 4.7499999999999964,
  "bends": {
@@ -56,7 +56,7 @@
     "r_in": 1.5,
     "angle_deg": 90.0,
     "direction": "UP 90",
-    "length": 105.5,
+    "length": 99.0,
     "side": "x0"
    },
    {
@@ -70,7 +70,7 @@
     "r_in": 1.5,
     "angle_deg": 90.0,
     "direction": "UP 90",
-    "length": 105.5,
+    "length": 99.0,
     "side": "x1"
    },
    {
@@ -84,7 +84,7 @@
     "r_in": 1.5,
     "angle_deg": 90.0,
     "direction": "UP 90",
-    "length": 145.5,
+    "length": 139.0,
     "side": "y0"
    },
    {
@@ -98,7 +98,7 @@
     "r_in": 1.5,
     "angle_deg": 90.0,
     "direction": "UP 90",
-    "length": 145.5,
+    "length": 139.0,
     "side": "y1"
    },
    {
@@ -114,28 +114,28 @@
     "r_in": 1.5,
     "angle_deg": 90.0,
     "direction": "DOWN 90",
-    "length": 157.5,
+    "length": 151.0,
     "side": "x0"
    },
    {
     "r_in": 1.5,
     "angle_deg": 90.0,
     "direction": "DOWN 90",
-    "length": 157.5,
+    "length": 151.0,
     "side": "x1"
    },
    {
     "r_in": 1.5,
     "angle_deg": 90.0,
     "direction": "DOWN 90",
-    "length": 197.5,
+    "length": 191.0,
     "side": "y0"
    },
    {
     "r_in": 1.5,
     "angle_deg": 90.0,
     "direction": "DOWN 90",
-    "length": 197.5,
+    "length": 191.0,
     "side": "y1"
    }
   ]
@@ -145,9 +145,15 @@
   "body flange": 25.0,
   "lid skirt": 9.25
  },
- "bend_relief": {
-  "width": 0.75,
-  "depth": 3.5
+ "bend_relief_measured_on_dxf": {
+  "body": {
+   "width_min": 3.9999999999999587,
+   "depth_min": 5.672898088036524
+  },
+  "lid": {
+   "width_min": 3.9999999999999587,
+   "depth_min": 5.672898088036524
+  }
  },
  "gasket.compression": 0.25,
  "pair.rpi_pcb|body.step#0.min_clearance": 6.0,
