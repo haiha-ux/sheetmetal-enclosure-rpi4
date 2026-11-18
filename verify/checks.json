@@ -3,7 +3,7 @@
   "name": "body: one valid solid, STEP re-import matches build",
   "pass": true,
   "solids": 1,
-  "rel_volume": 8.01328712799491e-15,
+  "rel_volume": 1.1310334493239982e-14,
   "rel_bbox": 0.0
  },
  {
@@ -15,7 +15,7 @@
  {
   "name": "body: STL watertight",
   "pass": true,
-  "stl_volume": 76270.42235021875
+  "stl_volume": 75909.14874105192
  },
  {
   "name": "body_flat.dxf: 1 closed outline, holes as circles, 8 BEND lines, mm",
@@ -40,7 +40,7 @@
  {
   "name": "body: flat area x T (K-corrected) = STEP volume within 0.5 %",
   "pass": true,
-  "rel_err": 9.730420083993897e-15
+  "rel_err": 1.2077136831764864e-14
  },
  {
   "name": "body: DXF holes refolded onto STEP holes (+-0.1), counts equal",
@@ -61,27 +61,27 @@
   "min": 7.5
  },
  {
-  "name": "body: PEM SO-M2.5 centre to sheet edge >= 5.8",
+  "name": "body: PEM FHA-M2.5 stud centre to sheet edge >= 5.4",
   "pass": true,
-  "min": 24.041630560342615
+  "min": 21.126109438322995
  },
  {
   "name": "lid: one valid solid, STEP re-import matches build",
   "pass": true,
   "solids": 1,
-  "rel_volume": 5.852698445027461e-14,
+  "rel_volume": 5.864510479306892e-14,
   "rel_bbox": 0.0
  },
  {
   "name": "lid: uniform thickness T = 1.5 (+-0.01, skin-to-skin rays)",
   "pass": true,
-  "min": 1.4997736719172285,
+  "min": 1.4997732134832098,
   "max": 1.4999000000000002
  },
  {
   "name": "lid: STL watertight",
   "pass": true,
-  "stl_volume": 57683.18792462541
+  "stl_volume": 57567.00759507815
  },
  {
   "name": "lid_flat.dxf: 1 closed outline, holes as circles, 4 BEND lines, mm",
@@ -100,13 +100,13 @@
  {
   "name": "lid: STEP unfolded along y (section at x=100.0) = DXF flat length (+-0.1)",
   "pass": true,
-  "step": 178.19159235214664,
+  "step": 178.19159235214678,
   "dxf": 178.19159235214624
  },
  {
   "name": "lid: flat area x T (K-corrected) = STEP volume within 0.5 %",
   "pass": true,
-  "rel_err": 6.004061335846786e-14
+  "rel_err": 5.915066604128157e-14
  },
  {
   "name": "lid: DXF holes refolded onto STEP holes (+-0.1), counts equal",
@@ -127,6 +127,12 @@
   "body wall": 42.0,
   "body flange": 25.0,
   "lid skirt": 9.25
+ },
+ {
+  "name": "bend reliefs: width >= T/2, depth >= T + r + 0.5",
+  "pass": true,
+  "width": 0.75,
+  "depth": 3.5
  },
  {
   "name": "gasket compression inside 20-30 % (Stockwell, IP-rated)",

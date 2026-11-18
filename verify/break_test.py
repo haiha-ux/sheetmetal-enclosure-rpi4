@@ -11,6 +11,7 @@ CASES = [
     ("gasket squeezed 40 %", {"GASKET": {"inner": 3.0, "outer": 11.0, "free_t": 3.0, "compression": 0.40, "kind": "x"}}, "gasket compression"),
     ("Pi moved 34 mm toward the y = 0 wall", {"RPI_ORIGIN": [15.0, 5.0]}, "plug_usbc"),
     ("flange 20 mm (nut too close to the edge)", {"F": 20.0}, "centre to sheet edge"),
+    ("relief only 2 mm deep", {"RELIEF_DEPTH": 2.0}, "bend reliefs"),
 ]
 res = []
 for name, over, expect in CASES:

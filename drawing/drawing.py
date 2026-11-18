@@ -75,7 +75,7 @@ def flat_sheet(part, title, origin, notes):
     bends = [((e.dxf.start.x, e.dxf.start.y), (e.dxf.end.x, e.dxf.end.y)) for e in src if e.dxftype() == "LINE"]
     for i, (a, b) in enumerate(bends, 1):
         msp.add_line(T(*a), T(*b), dxfattribs={"layer": "BEND"})
-        mx, my = T((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+        mx, my = T(a[0] + 0.3 * (b[0] - a[0]), a[1] + 0.3 * (b[1] - a[1]))   # 30 % along: clear of the mid-edge holes
         txt(msp, f"B{i}", (mx + 1, my + 1), 2.2)
     X1, Y1 = max(xs), max(ys)
     dim(msp, T(x0, y0), T(X1, y0), base=T(0, y0 - 12 / SC))
@@ -83,10 +83,19 @@ def flat_sheet(part, title, origin, notes):
     # bend line positions measured from the left / bottom of the blank
     vx = sorted({round(a[0], 3) for a, b in bends if abs(a[0] - b[0]) < 1e-6})
     vy = sorted({round(a[1], 3) for a, b in bends if abs(a[1] - b[1]) < 1e-6})
-    for j, x in enumerate(vx):
+    # each bend line dimensioned from the nearer edge of the blank (reads like a brake set-up)
+    lo_x = [x for x in vx if x - x0 <= X1 - x]
+    hi_x = [x for x in vx if x - x0 > X1 - x]
+    for j, x in enumerate(lo_x):
         dim(msp, T(x0, Y1), T(x, Y1), base=T(0, Y1 + (6 + 5 * j) / SC))
-    for j, y in enumerate(vy):
+    for j, x in enumerate(hi_x):
+        dim(msp, T(X1, Y1), T(x, Y1), base=T(0, Y1 + (6 + 5 * j) / SC))
+    lo_y = [y for y in vy if y - y0 <= Y1 - y]
+    hi_y = [y for y in vy if y - y0 > Y1 - y]
+    for j, y in enumerate(lo_y):
         dim(msp, T(X1, y0), T(X1, y), base=T(X1 + (6 + 5 * j) / SC, 0), angle=90)
+    for j, y in enumerate(hi_y):
+        dim(msp, T(X1, Y1), T(X1, y), base=T(X1 + (6 + 5 * j) / SC, 0), angle=90)
     # bend table
     tb = meta["bends"][part]
     tx, ty = 250, 250
@@ -106,7 +115,7 @@ def flat_sheet(part, title, origin, notes):
         kinds.setdefault(round(d, 2), []).append((x - x0, y - y0))
     yy = hy - 6
     for d, lst in sorted(kinds.items()):
-        name = {P.PEM_NUT["hole"]: "PEM CLS-M4-1 nut", P.PEM_STANDOFF["hole"]: "PEM SO-M2.5-6 standoff",
+        name = {P.PEM_NUT["hole"]: "PEM CLS-M4-1 nut", P.STUD["hole"]: "PEM FHA-M2.5-12 flush-head stud",
                 P.GLAND_M16["hole"]: "M16x1.5 gland", P.GLAND_PG7["hole"]: "PG7 gland", P.LID_HOLE_D: "M4 clearance"}.get(d, "")
         txt(msp, f"{len(lst)} x %%c{d:.2f}  {name}", (tx, yy), 2.2)
         yy -= 4.2
@@ -164,7 +173,7 @@ def assembly_sheet():
            f"12 PEM CLS-M4-1 self-clinching nut (body flange)",
            f"12 Spacer {P.SPACER['od']}/{P.SPACER['id']} x {meta['lid_geom'][3]:.2f} mm (gasket compression stop)",
            "12 M4 pan-head screw, length per PEM CLS-M4-1 thread (M4x8 nominal), with sealing washer",
-           f"4  PEM SO-M2.5-6 standoff, 4 M2.5x5 screws",
+           f"4  PEM FHA-M2.5-12 flush-head stud + 6 mm spacer 5/2.7 + M2.5 nut (blind: no hole through the base)",
            f"1  {P.GLAND_M16['name']}, cable {P.GLAND_M16['cable'][0]}-{P.GLAND_M16['cable'][1]} mm (Ethernet)",
            f"1  {P.GLAND_PG7['name']}, cable {P.GLAND_PG7['cable'][0]}-{P.GLAND_PG7['cable'][1]} mm (USB-C power)",
            "1  Raspberry Pi 4 Model B"]
@@ -184,6 +193,8 @@ def main():
               "All holes laser cut; PEM parts installed after bending."]
     flat_sheet("body", "RPi 4 IP65 enclosure - BODY flat pattern", (35, 25),
                common + ["Bend the flanges (DOWN) first, then the walls (UP): see the step column.",
+                         "Corner reliefs 0.75 x 3.5 at every bend end; weld them closed with the corner seams.",
+                         "Gasket land flatness 0.3 mm after welding (fixture or skim).",
                          "Weld the 4 wall corners and the 4 flange mitres, grind flush."])
     flat_sheet("lid", "RPi 4 IP65 enclosure - LID flat pattern", (45, 50), common + ["Skirt corners open (not part of the seal)."])
     assembly_sheet()

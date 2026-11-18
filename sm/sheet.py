@@ -65,14 +65,33 @@ def flange_flat():
 
 def body_solid():
     L, W, H, F = P.L, P.W, P.H, P.F
+    sb = P.BEND_SETBACK
     b = box(r, L - r, r, W - r, 0, T)
     for side, (ax, n, pos, E) in SIDES.items():
-        b += bend(side, -r, T + r, r, E - r, (-r, T), (0, T + r))
-        b += sbox(side, 0, T, r, E - r, T + r, H - T - r)
-        b += bend(side, T + r, H - T - r, r, E - r, (0, T + r), (H - T - r, H))
+        b += bend(side, -r, T + r, r + sb, E - r - sb, (-r, T), (0, T + r))
+        b += sbox(side, 0, T, r + sb, E - r - sb, T + r, H - T - r)
+        b += bend(side, T + r, H - T - r, r + sb, E - r - sb, (0, T + r), (H - T - r, H))
         u0, u1 = T + r, T + F
         b += plan_prism(side, [(u0, -u0), (u1, -u1), (u1, E + u1), (u0, E + u0)], H - T, H)
+    for sl in relief_slots("body"):
+        b -= Pos(0, 0, -1) * extrude(sl, T + 2)
     return b
+
+
+def relief_slots(part):
+    """Bend reliefs at the 4 corners: a slot BEND_SETBACK wide and RELIEF_DEPTH deep into the base or plate,
+    beside each end of each bend (relief width >= T/2, depth >= T + r + 0.5 past the bend)."""
+    sb, rd = P.BEND_SETBACK, P.RELIEF_DEPTH
+    out = []
+    for side, (ax, n, pos, E) in SIDES.items():
+        if part == "body":
+            e0, s0, s1 = -r, r, E - r
+        else:
+            a = lid_geom()[0] - r
+            e0, s0, s1 = a, -a, E + a
+        for a_, b_ in ((s0, s0 + sb), (s1 - sb, s1)):
+            out.append(fpoly(side, [(e0 - rd, a_), (e0, a_), (e0, b_), (e0 - rd, b_)]))
+    return out
 
 
 def lid_geom():
@@ -87,10 +106,13 @@ def lid_solid():
     L, W = P.L, P.W
     u_si, zl, zsb, _ = lid_geom()
     a = u_si - r
+    sb = P.BEND_SETBACK
     b = box(-a, L + a, -a, W + a, zl, zl + T)
     for side, (ax, n, pos, E) in SIDES.items():
-        b += bend(side, u_si - r, zl - r, -a, E + a, (u_si - r, u_si + T), (zl - r, zl + T))
-        b += sbox(side, u_si, u_si + T, -a, E + a, zsb, zl - r)
+        b += bend(side, u_si - r, zl - r, -a + sb, E + a - sb, (u_si - r, u_si + T), (zl - r, zl + T))
+        b += sbox(side, u_si, u_si + T, -a + sb, E + a - sb, zsb, zl - r)
+    for sl in relief_slots("lid"):
+        b -= Pos(0, 0, zl - 1) * extrude(sl, T + 2)
     return b
 
 
@@ -101,7 +123,7 @@ def holes():
     out = []
     ox, oy = P.RPI_ORIGIN
     for hx, hy in P.RPI["holes"]:
-        out.append(dict(part="body", kind="PEM SO-M2.5-6 standoff", d=P.PEM_STANDOFF["hole"],
+        out.append(dict(part="body", kind=P.STUD["name"] + " stud", d=P.STUD["hole"],
                         c=(ox + hx, oy + hy, T / 2), axis="z", side=None))
     uh = T + P.FLANGE_HOLE_FROM_WALL
     for side, (ax, n, pos, E) in SIDES.items():
@@ -138,11 +160,15 @@ def body_flat_regions():
     """2D faces of the body flat pattern, in the base plane frame (same x, y as the base)."""
     L, W = P.L, P.W
     BA = P.ba(90)
-    faces = [Pos((L) / 2, (W) / 2) * Rectangle(L - 2 * r, W - 2 * r)]
+    sb = P.BEND_SETBACK
+    base = Pos((L) / 2, (W) / 2) * Rectangle(L - 2 * r, W - 2 * r)
+    for sl in relief_slots("body"):
+        base = base - sl
+    faces = [base]
     for side, (ax, n, pos, E) in SIDES.items():
         u_edge = -r                                # base flat edge, in u
         v_wall_end = 2 * BA + wall_flat()
-        faces.append(fpoly(side, [(u_edge, r), (u_edge + v_wall_end, r), (u_edge + v_wall_end, E - r), (u_edge, E - r)]))
+        faces.append(fpoly(side, [(u_edge, r + sb), (u_edge + v_wall_end, r + sb), (u_edge + v_wall_end, E - r - sb), (u_edge, E - r - sb)]))
         # flange: flat u' = u_edge + v ; 3D u = T + r + (v - v_wall_end); miter s >= -u3d
         v0, v1 = v_wall_end, v_wall_end + flange_flat()
         u3 = lambda v: T + r + (v - v0)
@@ -156,9 +182,13 @@ def lid_flat_regions():
     a = u_si - r
     BA = P.ba(90)
     skirt_flat = (zl - r) - zsb
-    faces = [Pos(L / 2, W / 2) * Rectangle(L + 2 * a, W + 2 * a)]
+    sb = P.BEND_SETBACK
+    plate = Pos(L / 2, W / 2) * Rectangle(L + 2 * a, W + 2 * a)
+    for sl in relief_slots("lid"):
+        plate = plate - sl
+    faces = [plate]
     for side, (ax, n, pos, E) in SIDES.items():
-        faces.append(fpoly(side, [(a, -a), (a + BA + skirt_flat, -a), (a + BA + skirt_flat, E + a), (a, E + a)]))
+        faces.append(fpoly(side, [(a, -a + sb), (a + BA + skirt_flat, -a + sb), (a + BA + skirt_flat, E + a - sb), (a, E + a - sb)]))
     return faces
 
 
@@ -175,12 +205,14 @@ def bend_lines(part):
     if part == "body":
         for side, (ax, n, pos, E) in SIDES.items():
             for v, d in ((BA / 2, "UP 90"), (BA + wall_flat() + BA / 2, "DOWN 90")):
-                out.append((side, g(side, -r + v, r), g(side, -r + v, E - r), 90.0, d, E - 2 * r))
+                sb = P.BEND_SETBACK
+                out.append((side, g(side, -r + v, r + sb), g(side, -r + v, E - r - sb), 90.0, d, E - 2 * r - 2 * sb))
     else:
         u_si, zl, zsb, _ = lid_geom()
         a = u_si - r
         for side, (ax, n, pos, E) in SIDES.items():
-            out.append((side, g(side, a + BA / 2, -a), g(side, a + BA / 2, E + a), 90.0, "DOWN 90", E + 2 * a))
+            sb = P.BEND_SETBACK
+            out.append((side, g(side, a + BA / 2, -a + sb), g(side, a + BA / 2, E + a - sb), 90.0, "DOWN 90", E + 2 * a - 2 * sb))
     return out
 
 

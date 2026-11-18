@@ -50,9 +50,12 @@ def write_dxf(part, face, holes, path):
 
 def rpi_parts():
     ox, oy = P.RPI_ORIGIN
-    zb = P.T + P.PEM_STANDOFF["length"]            # PCB underside on the standoffs
+    zb = P.T + P.PI_SPACER["length"]               # PCB underside on the spacers
     zt = zb + P.RPI["t"]
-    out = {"rpi_pcb": S.box(ox, ox + P.RPI["l"], oy, oy + P.RPI["w"], zb, zt)}
+    pcb = S.box(ox, ox + P.RPI["l"], oy, oy + P.RPI["w"], zb, zt)
+    for hx, hy in P.RPI["holes"]:
+        pcb -= Pos(ox + hx, oy + hy, zb - 1) * Cylinder(P.RPI["hole_d"] / 2, P.RPI["t"] + 2, align=(S.Align.CENTER, S.Align.CENTER, S.Align.MIN))
+    out = {"rpi_pcb": pcb}
     for n, x0, y0, x1, y1, h in P.RPI_PARTS:
         out[f"rpi_{n}"] = S.box(ox + x0, ox + x1, oy + y0, oy + y1, zt, zt + h)
     eth = [p for p in P.RPI_PARTS if p[0] == "ethernet"][0]
@@ -65,9 +68,12 @@ def rpi_parts():
     up = P.USBC_PLUG
     uz = zt + usbc[5] / 2
     out["plug_usbc"] = S.box(ox + uc - up["w"] / 2, ox + uc + up["w"] / 2, oy + usbc[2] - up["length"], oy + usbc[2], uz - up["h"] / 2, uz + up["h"] / 2)
+    C = lambda d, h: Cylinder(d / 2, h, align=(S.Align.CENTER, S.Align.CENTER, S.Align.MIN))
     for i, (hx, hy) in enumerate(P.RPI["holes"]):
-        out[f"standoff_{i}"] = Pos(ox + hx, oy + hy, P.T) * Cylinder(P.PEM_STANDOFF["od"] / 2, P.PEM_STANDOFF["length"],
-                                                                         align=(S.Align.CENTER, S.Align.CENTER, S.Align.MIN))
+        x, y = ox + hx, oy + hy
+        out[f"stud_{i}"] = Pos(x, y, P.T) * C(P.STUD["hole"], P.STUD["length"] - P.T)          # shank above the sheet
+        out[f"spacer_pi_{i}"] = Pos(x, y, P.T) * (C(P.PI_SPACER["od"], P.PI_SPACER["length"]) - C(P.PI_SPACER["id"], P.PI_SPACER["length"]))
+        out[f"nut_pi_{i}"] = Pos(x, y, zt) * (C(P.PI_NUT["af"] / 0.866, P.PI_NUT["h"]) - C(P.STUD["hole"], P.PI_NUT["h"]))
     return out, zt
 
 

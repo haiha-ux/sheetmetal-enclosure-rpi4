@@ -31,7 +31,7 @@ def main():
         add(dict(name=f"{n} flat DXF developed size", kind="bbox_dim", a=f"{n}_flat.dxf",
                  target=[round(v, 3) for v in M["flats"][n]["bbox"]], tol=0.1, op="==", axis="xy [x0, y0, x1, y1]"))
         add(dict(name=f"{n} holes to bend zone", kind="min_distance", a=f"{n}_flat.dxf holes", b="BEND zones", target=2 * P.T + P.R_IN, op=">="))
-    for d, cnt, part, what in ((P.PEM_STANDOFF["hole"], 4, "body", "PEM SO-M2.5-6"), (P.PEM_NUT["hole"], 12, "body", "PEM CLS-M4-1"),
+    for d, cnt, part, what in ((P.STUD["hole"], 4, "body", "PEM FHA-M2.5-12 stud"), (P.PEM_NUT["hole"], 12, "body", "PEM CLS-M4-1"),
                                (P.GLAND_M16["hole"], 1, "body", "M16x1.5 gland"), (P.GLAND_PG7["hole"], 1, "body", "PG7 gland"),
                                (P.LID_HOLE_D, 12, "lid", "M4 clearance")):
         add(dict(name=what, kind="hole_diameter", a=f"{part}.step#0", target=d, tol=0.02, op="==", count=cnt))

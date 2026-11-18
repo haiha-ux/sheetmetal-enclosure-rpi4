@@ -105,5 +105,15 @@
    "no interference spacer_11 | lid.step#0",
    "no interference between body, lid and every other part"
   ]
+ },
+ {
+  "case": "relief only 2 mm deep",
+  "override": {
+   "RELIEF_DEPTH": 2.0
+  },
+  "caught": true,
+  "failed_checks": [
+   "bend reliefs: width >= T/2, depth >= T + r + 0.5"
+  ]
  }
 ]

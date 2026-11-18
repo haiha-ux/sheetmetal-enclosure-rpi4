@@ -173,7 +173,7 @@ def main():
         hb = min(seg_dist((x, y), a, b_) - d / 2 - BA / 2 for x, y, d in circles for a, b_ in bends)
         report[f"{n}.hole_to_bend_min"] = hb
         check(f"{n}: every hole edge >= 2T + r_in = {need} from the bend zone", hb >= need, min=hb)
-        for nm, spec in (("PEM CLS-M4", P.PEM_NUT), ("PEM SO-M2.5", P.PEM_STANDOFF)):
+        for nm, spec in (("PEM CLS-M4", P.PEM_NUT), ("PEM FHA-M2.5 stud", P.STUD)):
             hs = [(x, y) for x, y, d in circles if abs(d - spec["hole"]) < 1e-3]
             if not hs:
                 continue
@@ -188,6 +188,9 @@ def main():
     flanges = {"body wall": P.H, "body flange": P.F + P.T, "lid skirt": (zl + P.T) - zsb}
     report["flange_lengths_outside"] = flanges
     check(f"every flange >= SendCutSend minimum {P.MIN_FLANGE}", min(flanges.values()) >= P.MIN_FLANGE, **flanges)
+    rel_ok = P.BEND_SETBACK >= P.T / 2 and P.RELIEF_DEPTH >= P.T + P.R_IN + 0.5
+    report["bend_relief"] = {"width": P.BEND_SETBACK, "depth": P.RELIEF_DEPTH}
+    check("bend reliefs: width >= T/2, depth >= T + r + 0.5", rel_ok, width=P.BEND_SETBACK, depth=P.RELIEF_DEPTH)
     comp = 1 - gap / P.GASKET["free_t"]
     report["gasket.compression"] = comp
     check("gasket compression inside 20-30 % (Stockwell, IP-rated)", 0.20 <= comp <= 0.30, compression=comp)
