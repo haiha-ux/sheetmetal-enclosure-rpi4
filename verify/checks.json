@@ -1,0 +1,191 @@
+[
+ {
+  "name": "body: one valid solid, STEP re-import matches build",
+  "pass": true,
+  "solids": 1,
+  "rel_volume": 8.01328712799491e-15,
+  "rel_bbox": 0.0
+ },
+ {
+  "name": "body: uniform thickness T = 1.5 (+-0.01, skin-to-skin rays)",
+  "pass": true,
+  "min": 1.4997732134832098,
+  "max": 1.4999
+ },
+ {
+  "name": "body: STL watertight",
+  "pass": true,
+  "stl_volume": 76270.42235021875
+ },
+ {
+  "name": "body_flat.dxf: 1 closed outline, holes as circles, 8 BEND lines, mm",
+  "pass": true,
+  "outlines": 1,
+  "bends": 8,
+  "other": [],
+  "units": 4
+ },
+ {
+  "name": "body: STEP unfolded along x (section at y=30.0) = DXF flat length (+-0.1)",
+  "pass": true,
+  "step": 276.3831847042993,
+  "dxf": 276.3831847042925
+ },
+ {
+  "name": "body: STEP unfolded along y (section at x=100.0) = DXF flat length (+-0.1)",
+  "pass": true,
+  "step": 236.38318470426458,
+  "dxf": 236.3831847042925
+ },
+ {
+  "name": "body: flat area x T (K-corrected) = STEP volume within 0.5 %",
+  "pass": true,
+  "rel_err": 9.730420083993897e-15
+ },
+ {
+  "name": "body: DXF holes refolded onto STEP holes (+-0.1), counts equal",
+  "pass": true,
+  "worst": 1.4210854715202004e-14,
+  "dxf_holes": 18,
+  "step_holes": 18,
+  "unmatched": 0
+ },
+ {
+  "name": "body: every hole edge >= 2T + r_in = 4.5 from the bend zone",
+  "pass": true,
+  "min": 6.65
+ },
+ {
+  "name": "body: PEM CLS-M4 centre to sheet edge >= 6.9",
+  "pass": true,
+  "min": 7.5
+ },
+ {
+  "name": "body: PEM SO-M2.5 centre to sheet edge >= 5.8",
+  "pass": true,
+  "min": 24.041630560342615
+ },
+ {
+  "name": "lid: one valid solid, STEP re-import matches build",
+  "pass": true,
+  "solids": 1,
+  "rel_volume": 5.852698445027461e-14,
+  "rel_bbox": 0.0
+ },
+ {
+  "name": "lid: uniform thickness T = 1.5 (+-0.01, skin-to-skin rays)",
+  "pass": true,
+  "min": 1.4997736719172285,
+  "max": 1.4999000000000002
+ },
+ {
+  "name": "lid: STL watertight",
+  "pass": true,
+  "stl_volume": 57683.18792462541
+ },
+ {
+  "name": "lid_flat.dxf: 1 closed outline, holes as circles, 4 BEND lines, mm",
+  "pass": true,
+  "outlines": 1,
+  "bends": 4,
+  "other": [],
+  "units": 4
+ },
+ {
+  "name": "lid: STEP unfolded along x (section at y=30.0) = DXF flat length (+-0.1)",
+  "pass": true,
+  "step": 218.1915923522326,
+  "dxf": 218.19159235214624
+ },
+ {
+  "name": "lid: STEP unfolded along y (section at x=100.0) = DXF flat length (+-0.1)",
+  "pass": true,
+  "step": 178.19159235214664,
+  "dxf": 178.19159235214624
+ },
+ {
+  "name": "lid: flat area x T (K-corrected) = STEP volume within 0.5 %",
+  "pass": true,
+  "rel_err": 6.004061335846786e-14
+ },
+ {
+  "name": "lid: DXF holes refolded onto STEP holes (+-0.1), counts equal",
+  "pass": true,
+  "worst": 0.0,
+  "dxf_holes": 12,
+  "step_holes": 12,
+  "unmatched": 0
+ },
+ {
+  "name": "lid: every hole edge >= 2T + r_in = 4.5 from the bend zone",
+  "pass": true,
+  "min": 4.7499999999999964
+ },
+ {
+  "name": "every flange >= SendCutSend minimum 7.7",
+  "pass": true,
+  "body wall": 42.0,
+  "body flange": 25.0,
+  "lid skirt": 9.25
+ },
+ {
+  "name": "gasket compression inside 20-30 % (Stockwell, IP-rated)",
+  "pass": true,
+  "compression": 0.25
+ },
+ {
+  "name": "no interference between body, lid and every other part",
+  "pass": true,
+  "body_lid": 0.0
+ },
+ {
+  "name": "plug_rj45: >= 0.5 from walls, lid and glands",
+  "pass": true,
+  "clearance": 6.65
+ },
+ {
+  "name": "plug_usbc: >= 0.5 from walls, lid and glands",
+  "pass": true,
+  "clearance": 2.8
+ },
+ {
+  "name": "rpi_ethernet: >= 0.5 from body and lid",
+  "pass": true,
+  "clearance": 7.4
+ },
+ {
+  "name": "rpi_usb_a_top: >= 0.5 from body and lid",
+  "pass": true,
+  "clearance": 7.4
+ },
+ {
+  "name": "rpi_usb_a_bottom: >= 0.5 from body and lid",
+  "pass": true,
+  "clearance": 7.4
+ },
+ {
+  "name": "rpi_usb_c: >= 0.5 from body and lid",
+  "pass": true,
+  "clearance": 7.4
+ },
+ {
+  "name": "rpi_hdmi0: >= 0.5 from body and lid",
+  "pass": true,
+  "clearance": 7.4
+ },
+ {
+  "name": "rpi_hdmi1: >= 0.5 from body and lid",
+  "pass": true,
+  "clearance": 7.4
+ },
+ {
+  "name": "rpi_audio: >= 0.5 from body and lid",
+  "pass": true,
+  "clearance": 7.4
+ },
+ {
+  "name": "rpi_gpio: >= 0.5 from body and lid",
+  "pass": true,
+  "clearance": 7.4
+ }
+]

@@ -1,0 +1,205 @@
+[
+ {
+  "name": "body bbox dx",
+  "kind": "bbox_dim",
+  "a": "body.step#0",
+  "axis": "x",
+  "target": 200.0,
+  "tol": 0.1,
+  "op": "=="
+ },
+ {
+  "name": "body bbox dy",
+  "kind": "bbox_dim",
+  "a": "body.step#0",
+  "axis": "y",
+  "target": 160.0,
+  "tol": 0.1,
+  "op": "=="
+ },
+ {
+  "name": "body bbox dz",
+  "kind": "bbox_dim",
+  "a": "body.step#0",
+  "axis": "z",
+  "target": 42.0,
+  "tol": 0.1,
+  "op": "=="
+ },
+ {
+  "name": "body sheet thickness",
+  "kind": "thickness",
+  "a": "body.step#0",
+  "target": 1.5,
+  "tol": 0.01,
+  "op": "=="
+ },
+ {
+  "name": "body bends",
+  "kind": "bends",
+  "a": "body.step#0",
+  "count": 8,
+  "r_in": 1.5,
+  "angle_deg": 90,
+  "kfactor": 0.42
+ },
+ {
+  "name": "body flat DXF developed size",
+  "kind": "bbox_dim",
+  "a": "body_flat.dxf",
+  "target": [
+   -63.192,
+   -63.192,
+   213.192,
+   173.192
+  ],
+  "tol": 0.1,
+  "op": "==",
+  "axis": "xy [x0, y0, x1, y1]"
+ },
+ {
+  "name": "body holes to bend zone",
+  "kind": "min_distance",
+  "a": "body_flat.dxf holes",
+  "b": "BEND zones",
+  "target": 4.5,
+  "op": ">="
+ },
+ {
+  "name": "lid bbox dx",
+  "kind": "bbox_dim",
+  "a": "lid.step#0",
+  "axis": "x",
+  "target": 205.0,
+  "tol": 0.1,
+  "op": "=="
+ },
+ {
+  "name": "lid bbox dy",
+  "kind": "bbox_dim",
+  "a": "lid.step#0",
+  "axis": "y",
+  "target": 165.0,
+  "tol": 0.1,
+  "op": "=="
+ },
+ {
+  "name": "lid bbox dz",
+  "kind": "bbox_dim",
+  "a": "lid.step#0",
+  "axis": "z",
+  "target": 9.25,
+  "tol": 0.1,
+  "op": "=="
+ },
+ {
+  "name": "lid sheet thickness",
+  "kind": "thickness",
+  "a": "lid.step#0",
+  "target": 1.5,
+  "tol": 0.01,
+  "op": "=="
+ },
+ {
+  "name": "lid bends",
+  "kind": "bends",
+  "a": "lid.step#0",
+  "count": 4,
+  "r_in": 1.5,
+  "angle_deg": 90,
+  "kfactor": 0.42
+ },
+ {
+  "name": "lid flat DXF developed size",
+  "kind": "bbox_dim",
+  "a": "lid_flat.dxf",
+  "target": [
+   -34.096,
+   -34.096,
+   184.096,
+   144.096
+  ],
+  "tol": 0.1,
+  "op": "==",
+  "axis": "xy [x0, y0, x1, y1]"
+ },
+ {
+  "name": "lid holes to bend zone",
+  "kind": "min_distance",
+  "a": "lid_flat.dxf holes",
+  "b": "BEND zones",
+  "target": 4.5,
+  "op": ">="
+ },
+ {
+  "name": "PEM SO-M2.5-6",
+  "kind": "hole_diameter",
+  "a": "body.step#0",
+  "target": 4.22,
+  "tol": 0.02,
+  "op": "==",
+  "count": 4
+ },
+ {
+  "name": "PEM CLS-M4-1",
+  "kind": "hole_diameter",
+  "a": "body.step#0",
+  "target": 5.41,
+  "tol": 0.02,
+  "op": "==",
+  "count": 12
+ },
+ {
+  "name": "M16x1.5 gland",
+  "kind": "hole_diameter",
+  "a": "body.step#0",
+  "target": 16.2,
+  "tol": 0.02,
+  "op": "==",
+  "count": 1
+ },
+ {
+  "name": "PG7 gland",
+  "kind": "hole_diameter",
+  "a": "body.step#0",
+  "target": 12.7,
+  "tol": 0.02,
+  "op": "==",
+  "count": 1
+ },
+ {
+  "name": "M4 clearance",
+  "kind": "hole_diameter",
+  "a": "lid.step#0",
+  "target": 4.5,
+  "tol": 0.02,
+  "op": "==",
+  "count": 12
+ },
+ {
+  "name": "volume = flat area x T with K",
+  "kind": "volume",
+  "a": "body.step#0 / lid.step#0",
+  "b": "*_flat.dxf",
+  "tol_rel": 0.005,
+  "op": "<="
+ },
+ {
+  "name": "plugs and Pi parts to walls, lid, glands",
+  "kind": "min_distance",
+  "a": "plug_rj45, plug_usbc, rpi_*",
+  "b": "body, lid, glands",
+  "target": 0.5,
+  "op": ">="
+ },
+ {
+  "name": "gasket compression",
+  "kind": "ratio",
+  "target": [
+   0.2,
+   0.3
+  ],
+  "measured": 0.25,
+  "op": "in"
+ }
+]

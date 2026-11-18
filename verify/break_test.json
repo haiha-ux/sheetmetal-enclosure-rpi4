@@ -1,0 +1,109 @@
+[
+ {
+  "case": "flat built with K 0.33, checked with K 0.42",
+  "override": {
+   "K": 0.33
+  },
+  "caught": true,
+  "failed_checks": [
+   "body: STEP unfolded along x (section at y=30.0) = DXF flat length (+-0.1)",
+   "body: STEP unfolded along y (section at x=100.0) = DXF flat length (+-0.1)",
+   "body: DXF holes refolded onto STEP holes (+-0.1), counts equal",
+   "lid: STEP unfolded along x (section at y=30.0) = DXF flat length (+-0.1)",
+   "lid: STEP unfolded along y (section at x=100.0) = DXF flat length (+-0.1)"
+  ]
+ },
+ {
+  "case": "nut holes 3 mm from the wall",
+  "override": {
+   "FLANGE_HOLE_FROM_WALL": 3.0
+  },
+  "caught": true,
+  "failed_checks": [
+   "body: DXF holes refolded onto STEP holes (+-0.1), counts equal",
+   "body: every hole edge >= 2T + r_in = 4.5 from the bend zone",
+   "no interference nut_0 | body.step#0",
+   "no interference nut_1 | body.step#0",
+   "no interference nut_2 | body.step#0",
+   "no interference nut_3 | body.step#0",
+   "no interference nut_4 | body.step#0",
+   "no interference nut_5 | body.step#0",
+   "no interference nut_6 | body.step#0",
+   "no interference nut_7 | body.step#0",
+   "no interference nut_8 | body.step#0",
+   "no interference nut_9 | body.step#0",
+   "no interference nut_10 | body.step#0",
+   "no interference nut_11 | body.step#0",
+   "no interference between body, lid and every other part"
+  ]
+ },
+ {
+  "case": "M16 gland 8 mm above the base",
+  "override": {
+   "GLAND_M16_Z": 8.0
+  },
+  "caught": true,
+  "failed_checks": [
+   "body: DXF holes refolded onto STEP holes (+-0.1), counts equal",
+   "body: every hole edge >= 2T + r_in = 4.5 from the bend zone",
+   "no interference gland_nut_M16 | body.step#0",
+   "no interference between body, lid and every other part"
+  ]
+ },
+ {
+  "case": "gasket squeezed 40 %",
+  "override": {
+   "GASKET": {
+    "inner": 3.0,
+    "outer": 11.0,
+    "free_t": 3.0,
+    "compression": 0.4,
+    "kind": "x"
+   }
+  },
+  "caught": true,
+  "failed_checks": [
+   "gasket compression inside 20-30 % (Stockwell, IP-rated)"
+  ]
+ },
+ {
+  "case": "Pi moved 34 mm toward the y = 0 wall",
+  "override": {
+   "RPI_ORIGIN": [
+    15.0,
+    5.0
+   ]
+  },
+  "caught": true,
+  "failed_checks": [
+   "no interference plug_usbc | body.step#0",
+   "no interference between body, lid and every other part",
+   "plug_usbc: >= 0.5 from walls, lid and glands"
+  ]
+ },
+ {
+  "case": "flange 20 mm (nut too close to the edge)",
+  "override": {
+   "F": 20.0
+  },
+  "caught": true,
+  "failed_checks": [
+   "body: uniform thickness T = 1.5 (+-0.01, skin-to-skin rays)",
+   "body: PEM CLS-M4 centre to sheet edge >= 6.9",
+   "lid: every hole edge >= 2T + r_in = 4.5 from the bend zone",
+   "no interference spacer_0 | lid.step#0",
+   "no interference spacer_1 | lid.step#0",
+   "no interference spacer_2 | lid.step#0",
+   "no interference spacer_3 | lid.step#0",
+   "no interference spacer_4 | lid.step#0",
+   "no interference spacer_5 | lid.step#0",
+   "no interference spacer_6 | lid.step#0",
+   "no interference spacer_7 | lid.step#0",
+   "no interference spacer_8 | lid.step#0",
+   "no interference spacer_9 | lid.step#0",
+   "no interference spacer_10 | lid.step#0",
+   "no interference spacer_11 | lid.step#0",
+   "no interference between body, lid and every other part"
+  ]
+ }
+]
