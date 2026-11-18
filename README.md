@@ -6,7 +6,7 @@ A two-part enclosure in 1.5 mm aluminium 5052-H32 for a Raspberry Pi 4 Model B.
 - The cables leave through two cable glands, so no Pi port faces the outside.
 
 It is built in build123d as true sheet metal: planar faces with cylindrical bends of inside radius 1.5 mm. The
-flat patterns are generated from the same parameters, and a separate check unfolds the 3D solid again and compares
+flat patterns are built from the same parameters, and a separate check unfolds the 3D solid again and compares
 it with them.
 
 IP65 is a design target, not a certification. The design has not been made or tested. Every fit and seal statement
