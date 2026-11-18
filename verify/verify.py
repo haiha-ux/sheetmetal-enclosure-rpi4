@@ -173,7 +173,7 @@ def main():
         hb = min(seg_dist((x, y), a, b_) - d / 2 - BA / 2 for x, y, d in circles for a, b_ in bends)
         report[f"{n}.hole_to_bend_min"] = hb
         check(f"{n}: every hole edge >= 2T + r_in = {need} from the bend zone", hb >= need, min=hb)
-        for nm, spec in (("PEM CLS-M4", P.PEM_NUT), ("PEM FHA-M2.5 stud", P.STUD)):
+        for nm, spec in (("PEM CLS-M4", P.PEM_NUT), ("PEM IFHA-M2.5 stud", P.STUD)):
             hs = [(x, y) for x, y, d in circles if abs(d - spec["hole"]) < 1e-3]
             if not hs:
                 continue

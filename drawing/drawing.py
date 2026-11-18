@@ -96,9 +96,27 @@ def flat_sheet(part, title, origin, notes):
         dim(msp, T(X1, y0), T(X1, y), base=T(X1 + (6 + 5 * j) / SC, 0), angle=90)
     for j, y in enumerate(hi_y):
         dim(msp, T(X1, Y1), T(X1, y), base=T(X1 + (6 + 5 * j) / SC, 0), angle=90)
+    # corner notch (relief + bend zone): the concave corner nearest the lower-left whose two edges are both short
+    n = len(pts)
+    best = None
+    for i in range(n):
+        a, b, c = pts[i - 1], pts[i], pts[(i + 1) % n]
+        cross = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0])
+        la, lc = abs(b[0] - a[0]) + abs(b[1] - a[1]), abs(c[0] - b[0]) + abs(c[1] - b[1])
+        if cross < 0 and 5 < la < 15 and 5 < lc < 15 and (best is None or b[0] + b[1] < best[1][0] + best[1][1]):
+            best = (a, b, c)
+    assert best, "no corner notch found"
+    a, b, c = best
+    for p in (a, c):
+        if abs(p[1] - b[1]) < 1e-6:     # horizontal edge: dimension below/above it
+            dim(msp, T(*p), T(*b), base=T(0, b[1] + 6 / SC))
+        else:
+            dim(msp, T(*p), T(*b), base=T(b[0] + 6 / SC, 0), angle=90)
+    txt(msp, f"corner notch, 4x alike (includes the {P.RELIEF_DEPTH:g} x {P.RELIEF_DEPTH:g} relief)",
+        (T(*b)[0] + 14, T(*b)[1] + 4), 2.0)
     # bend table
     tb = meta["bends"][part]
-    tx, ty = 250, 236
+    tx, ty = 250, 228
     txt(msp, "BEND TABLE (order = sequence on the brake)", (tx, ty), 2.8)
     hdr = "ID   side  angle  direction  r_in   length   K     BA"
     txt(msp, hdr, (tx, ty - 6), 2.2)
@@ -192,9 +210,12 @@ def main():
               f"Bend allowance {P.ba(90):.3f} per 90 deg bend (K {P.K}, r_in {P.R_IN}).",
               f"Corner reliefs {P.RELIEF_DEPTH:g} x {P.RELIEF_DEPTH:g} at every corner; bends stop at them."]
     flat_sheet("body", "RPi 4 IP65 enclosure - BODY flat pattern", (35, 25),
-               common + ["Bend the flanges (DOWN) first, then the walls (UP): see the step column.",
-                         "PEM CLS-M4-1 and IFHA-M2.5-12 installed after bending.",
-                         "Weld corners, reliefs and mitres with filler; land flat to 0.3 mm after welding."])
+               common + ["Order: bend (flanges DOWN, then walls UP) > weld > flatten land > press PEM.",
+                         "Close corner notches, gaps, mitres: filler weld, or patch / folded tab.",
+                         "Leak test every welded corner, then flatten the gasket land to 0.3 mm.",
+                         "Press CLS-M4-1 and IFHA-M2.5-12 last; IFHA head flush on the outside.",
+                         "IFHA: head on punch side, no deburring; hole 2.50-2.58 (go/no-go pins).",
+                         "IFHA seal untested in 5052 by PEM: pass a 5052 coupon test first."])
     flat_sheet("lid", "RPi 4 IP65 enclosure - LID flat pattern", (45, 50), common + ["Skirt corners and reliefs stay open (not part of the seal)."])
     assembly_sheet()
 

@@ -61,7 +61,7 @@
   "min": 7.5
  },
  {
-  "name": "body: PEM FHA-M2.5 stud centre to sheet edge >= 5.4",
+  "name": "body: PEM IFHA-M2.5 stud centre to sheet edge >= 5.4",
   "pass": true,
   "min": 18.384776310850235
  },

@@ -74,9 +74,17 @@ These are my own checks (`verify/verify.py`, 34 of 34). The reviewer's independe
 
 Run everything with `python run_all.py` (Python 3.11 with build123d 0.13, trimesh, vtk, ezdxf; PyMuPDF for the PDFs).
 
-## Bend order
+## Process order
 
-Bend the four flanges first (DOWN 90°), then the four walls (UP 90°), then weld the corners, reliefs and mitres.
+One sequence for the body; the PEM hardware goes in last:
+
+1. Bend the four flanges (DOWN 90°), then the four walls (UP 90°).
+2. Weld the corners, reliefs and mitres closed (see below).
+3. Leak test the welded corners.
+4. Flatten the gasket land to 0.3 mm.
+5. Press the CLS-M4-1 nuts and the IFHA-M2.5-12 studs. The IFHA head sits flush on the outside of the base, with the
+   stud pointing into the box. Install from the punch side and do not deburr the hole (PEM IPF bulletin, p. IPF-5).
+
 The lid's four skirts are DOWN 90°. The step column in the bend tables gives the sequence. On the wall bends the
 finished 23.5 mm flanges hang off the tool, so confirm with the fabricator that their box-and-pan brake clears them.
 
@@ -85,8 +93,13 @@ finished 23.5 mm flanges hang off the tool, so confirm with the fabricator that 
 The flange mitres run about 23 mm across the gasket land, and TIG welding 1.5 mm aluminium will pull the land out of
 flat. Require a gasket-land flatness of 0.3 mm after welding, using a fixture or a light skim. The tolerance matters
 because the 2.25 mm spacers fix the lid height. A land that is 0.5 mm low in places drops the local compression from
-25 % to about 8 %, which is too little to seal. The corner gap is 2.25 mm per axis, so the corners need filler rod.
-A tighter gap, or weld tabs folded across the corners, would reduce the heat input and the distortion.
+25 % to about 8 %, which is too little to seal.
+
+After bending, each corner leaves an L-shaped opening of about 7 × 7 mm: the 4 × 4 mm relief plus the bend zones,
+and the 2.25 mm gap between the walls above it. That is too wide to close with filler alone without heavy heat
+input. Close it with a welded patch, or with a tab folded across the corner, and then leak test every corner
+(for example a soapy-water or dye-penetrant check on the inside) before the land is flattened. The flat drawings
+dimension one corner notch; all four are alike.
 
 ## Sources
 
@@ -96,7 +109,9 @@ A tighter gap, or weld tabs folded across the corners, would reduce the heat inp
   - Each connector's box size is read from the drawn outline, because the drawing does not dimension it.
 - **K-factor and minimum flange:** SendCutSend bending calculator. 5052 minimum bend radius 1 × t: SendCutSend 5052 page.
 - **PEM CLS-M4-1:** hole 5.41, minimum sheet 1.0, centre to edge 6.9 (pemnet.com).
-- **PEM IFHA-M2.5-12:** hole 2.50 +0.08 (cut at 2.54), minimum sheet 1, centre to edge 5.4, lengths 10–18 (PEM IPF bulletin, p. IPF-3). Rated IPX7 / IPX9K to ISO 20653, tested in CR4, 6082-T6 and 304 (p. IPF-2).
+- **PEM IFHA-M2.5-12:** hole 2.50 +0.08, minimum sheet 1, centre to edge 5.4, lengths 10–18, sheet hardness HB 82
+  or less (PEM IPF bulletin, p. IPF-3; 5052-H32 is about HB 60). Rated IPX7 / IPX9K to ISO 20653, tested in CR4,
+  6082-T6 and 304 (p. IPF-2). Install from the punch side, no deburring (p. IPF-5).
 - **Bend reliefs:** SendCutSend relief guide: width ≥ thickness / 2, depth ≥ thickness + bend radius + 0.5 mm from the bend line.
 - **Glands:** Lapp SKINTOP data sheets and thread table. M16 entry hole 16.0–16.2, PG7 12.5–12.8.
 - **Gasket compression:** Stockwell Elastomerics, 20–30 % for IP-rated seals.
@@ -123,7 +138,10 @@ The full URLs are in `sm/params.py` → `SOURCES`.
    - PEM's tooling changes at 1.51 mm sheet. 1.5 mm sheet with a plus tolerance can fall either side, so measure the
      sheet and tell the installer.
    - If the coupon leaks, a sealant under the head is the fallback.
+   - The IFHA hole band is 2.50–2.58. The DXF cuts it at 2.54, the middle of the band, which leaves ±0.04. Confirm
+     that the cutter holds ±0.04 on these four holes; if not, cut them undersize and ream to 2.52–2.54. Check them with 2.50 go and 2.58
+     no-go pins.
 4. Hardware sizes. The PG7 hole (12.7 mm) is in the middle of the 12.5–12.8 range quoted by different makers; use
    the value of the gland you buy. The gland locknut size was not found and is modelled from the body wrench size.
-5. Corner seal. The seal at the corners depends on the welds. The 2.25 mm corner gaps, the 4 × 4 mm reliefs and the
-   flange mitres must be welded closed, and the land kept flat to 0.3 mm (see above).
+5. Corner seal. The seal at the corners depends on the welds. The corner openings and the flange mitres must be
+   closed (patch or folded tab), leak tested, and the land kept flat to 0.3 mm (see above).

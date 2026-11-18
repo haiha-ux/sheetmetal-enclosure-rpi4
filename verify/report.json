@@ -27,7 +27,7 @@
  "body.refold_hole_max_err": 1.4210854715202004e-14,
  "body.hole_to_bend_min": 6.65,
  "body.PEM CLS-M4.centre_to_edge_min": 7.5,
- "body.PEM FHA-M2.5 stud.centre_to_edge_min": 18.384776310850235,
+ "body.PEM IFHA-M2.5 stud.centre_to_edge_min": 18.384776310850235,
  "lid.step#0.volume": 57117.90568985095,
  "lid.step#0.bbox_dx": 205.0,
  "lid.step#0.bbox_dy": 165.0,
